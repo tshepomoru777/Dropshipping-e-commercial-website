@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'search',
   
 ]
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'home.Account'
 
@@ -100,9 +101,9 @@ DATABASES = {
 
         'NAME': 'project',
 
-        'USER': 'postgres',
+        'USER': 'peterarendse',
 
-        'PASSWORD': 'vinhviral',
+        'PASSWORD': '3071',
 
         'HOST': 'localhost',
 

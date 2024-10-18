@@ -10,10 +10,10 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('shop', '0001_initial'),
-    ]
-
+    ('home', '0001_initial'),  # Adjust according to the actual migration file for home
+    ('shop', '0001_initial'),
+]
+    
     operations = [
         migrations.CreateModel(
             name='Cart',

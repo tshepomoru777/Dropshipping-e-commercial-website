@@ -5,7 +5,7 @@ from . import views
 from .views import UserLoginView, RegisterView, CheckoutView
 
 urlpatterns = [
-    # Leave as empty string for base url
+    
     path('', views.home, name="home"),
     path('cart/', views.cart, name="cart"),
     path('checkout/', views.checkout, name="checkout"),
