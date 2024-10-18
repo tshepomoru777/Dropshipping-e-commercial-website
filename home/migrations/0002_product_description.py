@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='product',
             name='description',
-            field=models.TextField(max_length=200, null=True),
+            field=models.TextField(null=False, default='Description not provided'),  # Enforcing non-null with a default value
         ),
     ]

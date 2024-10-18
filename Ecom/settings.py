@@ -10,9 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
-from datetime import datetime, timedelta
+from datetime import timedelta
 from pathlib import Path
-from django.conf import settings
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '0vm3balvxn&0-t$l5k@#sg*p_v$_!zqh#v5l7l6-&#+)m)jdpp'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', '0vm3balvxn&0-t$l5k@#sg*p_v$_!zqh#v5l7l6-&#+)m)jdpp')  # Updated to use environment variable
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True  # Remember to set this to False in production
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # Add domain name in production
 
 # Application definition
 
@@ -52,10 +52,12 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'cart',
     'search',
-  
+
 ]
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Custom User Model
 AUTH_USER_MODEL = 'home.Account'
 
 MIDDLEWARE = [
@@ -66,8 +68,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'mptt',
-    # 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+
 ]
 
 ROOT_URLCONF = 'Ecom.urls'
@@ -75,8 +76,7 @@ ROOT_URLCONF = 'Ecom.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],  # Ensure your 'templates' directory exists
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -95,6 +95,7 @@ WSGI_APPLICATION = 'Ecom.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
+
     'default': {
 
         'ENGINE': 'django.db.backends.postgresql',
@@ -130,30 +131,37 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# JWT Settings for token-based authentication
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
+
     'BLACKLIST_AFTER_ROTATION': True,
 
     'ALGORITHM': 'HS256',
-    'SIGNING_KEY': settings.SECRET_KEY,
-    'VERIFYING_KEY': None,
-
+    'SIGNING_KEY': SECRET_KEY,  # Using environment variable for secret key
     'AUTH_HEADER_TYPES': ('Bearer',),
     'USER_ID_FIELD': 'id',
+
     'USER_ID_CLAIM': 'user_id',
 
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+
     'TOKEN_TYPE_CLAIM': 'token_type',
-
-    'JTI_CLAIM': 'jti',
-
-    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
+
+
+
+
+#'JTI_CLAIM': 'jti',
+
+
+
+
+
 # Internationalization
+
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
@@ -168,17 +176,18 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
+
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static/')
-]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static/')]  # Ensure your 'static/' directory exists
+
+# Media files (Images, uploads)
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images/products_images')
 MEDIA_URL = '/images/products_images/'
 
+# Redirect URL after login
 LOGIN_REDIRECT_URL = "home"
 
-
+# Django Allauth settings for custom authentication
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
@@ -189,5 +198,12 @@ ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/?verification=1'
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/?verification=1'
 
-SITE_ID = 1
+# Email Backend for development
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Whitenoise middleware for serving static files in production
+MIDDLEWARE += ['whitenoise.middleware.WhiteNoiseMiddleware']
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# SITE_ID needed for Allauth
+SITE_ID = 1

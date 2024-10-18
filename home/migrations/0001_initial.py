@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=200, null=True)),
-                ('mail', models.CharField(max_length=200)),
+                ('email', models.EmailField(max_length=254)),
                 ('users', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
@@ -38,14 +38,15 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=200, null=True)),
-                ('price', models.FloatField()),
+                ('price', models.DecimalField(max_digits=10, decimal_places=2)),
                 ('digital', models.BooleanField(blank=True, default=False, null=True)),
+                ('slug', models.SlugField(unique=True))
             ],
         ),
         migrations.CreateModel(
             name='ShippingInfo',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('address', models.TextField(max_length=200)),
                 ('city', models.TextField(max_length=200)),
                 ('province', models.TextField(max_length=200)),

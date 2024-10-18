@@ -20,9 +20,12 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('home.urls')),
-    path('product/', include('product.urls')),
-    path('cart/',include('cart.urls')),
+    path('', include('home.urls')),  # For home page and related views
+    path('products/', include('product.urls')),  # Correcting 'product/' to 'products/' for consistency
+    path('cart/', include('cart.urls')),  # Including the cart app
+    path('search/', include('search.urls')),  # Adding search functionality
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Serve media files during development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
