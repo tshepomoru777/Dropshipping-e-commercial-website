@@ -12,6 +12,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        # Category model changes
         migrations.RemoveField(
             model_name='category',
             name='image',
@@ -23,12 +24,19 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='category',
             name='parent',
-            field=mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='home.Category'),
+            field=mptt.fields.TreeForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, 
+                related_name='children', to='home.Category'
+            ),
         ),
+        # Product model changes
         migrations.AddField(
             model_name='product',
             name='variant',
-            field=models.CharField(choices=[('None', 'None'), ('Size', 'Size'), ('Color', 'Color'), ('Size-Color', 'Size-Color')], default='None', max_length=10),
+            field=models.CharField(
+                choices=[('None', 'None'), ('Size', 'Size'), ('Color', 'Color'), ('Size-Color', 'Size-Color')],
+                default='None', max_length=10
+            ),
         ),
         migrations.AlterField(
             model_name='category',

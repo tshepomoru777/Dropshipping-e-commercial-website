@@ -10,6 +10,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        # This migration deletes the 'Category' model.
+        # Ensure this deletion aligns with the current database schema,
+        # and that any related models or fields (e.g., Product) have been adjusted accordingly.
         migrations.DeleteModel(
             name='Category',
         ),

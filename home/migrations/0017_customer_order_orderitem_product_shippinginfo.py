@@ -7,11 +7,11 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    initial = True
+
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('home', '0016_auto_20210110_1359'),
+        ('home', '0016_auto_20210110_1359'),  # Make sure this dependency is correct
     ]
 
     operations = [

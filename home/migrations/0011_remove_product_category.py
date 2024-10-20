@@ -10,6 +10,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        # This migration removes the 'category' field from the Product model.
+        # The field was later reintroduced in a subsequent migration (see 0014...).
+        # It is kept for consistency in the migration history.
         migrations.RemoveField(
             model_name='product',
             name='category',

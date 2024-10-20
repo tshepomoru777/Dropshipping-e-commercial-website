@@ -13,13 +13,13 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Categories',
+            name='Category',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=50)),
                 ('keywords', models.CharField(max_length=255)),
                 ('description', models.TextField(max_length=255)),
-                ('image', models.ImageField(blank=True, upload_to='images/')),
+                ('image', models.ImageField(blank=True, upload_to='categories/')),  # Organized image upload
                 ('slug', models.SlugField(unique=True)),
                 ('create_at', models.DateTimeField(auto_now_add=True)),
                 ('update_at', models.DateTimeField(auto_now=True)),
@@ -27,10 +27,11 @@ class Migration(migrations.Migration):
                 ('rght', models.PositiveIntegerField(editable=False)),
                 ('tree_id', models.PositiveIntegerField(db_index=True, editable=False)),
                 ('level', models.PositiveIntegerField(editable=False)),
-                ('parent', mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='home.Categories')),
+                ('parent', mptt.fields.TreeForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='home.Category')),
             ],
             options={
-                'abstract': False,
+                'verbose_name': 'Category',  # Name display in the admin panel
+                'verbose_name_plural': 'Categories',
             },
         ),
     ]

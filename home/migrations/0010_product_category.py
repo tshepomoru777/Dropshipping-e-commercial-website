@@ -11,6 +11,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        # Adding back the category field for the Product model
         migrations.AddField(
             model_name='product',
             name='category',
