@@ -2,4 +2,5 @@ from django.apps import AppConfig
 
 
 class HomeConfig(AppConfig):
-    name = 'home'
+    name = 'SUNDeliver'
+    verbose_name = 'SUNDELIVER'  # Change to desired display name

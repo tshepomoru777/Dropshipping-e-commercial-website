@@ -18,13 +18,13 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('subject', models.CharField(blank=True, max_length=50)),
-                ('comment', models.TextField(blank=True, max_length=250)),
+                ('comment', models.TextField(blank=True)),  # Removed max_length for TextField
                 ('rate', models.IntegerField(default=1)),
                 ('ip', models.CharField(blank=True, max_length=20)),
                 ('create_at', models.DateTimeField(auto_now_add=True)),
                 ('update_at', models.DateTimeField(auto_now=True)),
                 ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='product.Product')),
-                ('users', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),  # Changed 'users' to 'user'
             ],
         ),
     ]

@@ -18,12 +18,15 @@ class Migration(migrations.Migration):
                 ('product_url', models.TextField(max_length=255)),
                 ('title', models.TextField(max_length=255)),
                 ('supplier', models.TextField(max_length=255)),
-                ('description', models.TextField(max_length=255)),
+                ('description', models.TextField()),  # Removed max_length for longer descriptions
                 ('brand', models.TextField(max_length=255)),
-                ('price', models.TextField(max_length=255)),
-                ('img_urls', django.contrib.postgres.fields.ArrayField(base_field=models.ImageField(blank=True, upload_to='images/'), blank=True, size=None)),
-                ('variants', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=200), blank=True, size=None)),
-                ('categories', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=200), blank=True, size=None)),
+                ('price', models.DecimalField(max_digits=12, decimal_places=2)),  # Changed to DecimalField for price
+                ('img_urls', django.contrib.postgres.fields.ArrayField(
+                    base_field=models.TextField(), blank=True, size=None)),  # Changed to TextField to store URLs
+                ('variants', django.contrib.postgres.fields.ArrayField(
+                    base_field=models.CharField(max_length=200), blank=True, size=None)),
+                ('categories', django.contrib.postgres.fields.ArrayField(
+                    base_field=models.CharField(max_length=200), blank=True, size=None)),
             ],
         ),
     ]

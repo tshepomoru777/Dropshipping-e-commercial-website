@@ -13,11 +13,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='product',
             name='price',
-            field=models.FloatField(),
+            field=models.DecimalField(max_digits=12, decimal_places=2),
         ),
         migrations.AlterField(
             model_name='variants',
             name='price',
-            field=models.FloatField(),
+            field=models.DecimalField(max_digits=12, decimal_places=2),
         ),
     ]

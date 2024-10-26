@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='account',
             name='salt',
-            field=models.CharField(max_length=1000),
+            field=models.CharField(max_length=64),  # Changed back to 64
         ),
     ]

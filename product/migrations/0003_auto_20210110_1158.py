@@ -26,14 +26,14 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=150)),
-                ('description', models.TextField(max_length=255)),
+                ('description', models.TextField()),  # Removed max_length for more flexibility
                 ('image', models.ImageField(upload_to='images/')),
                 ('price', models.DecimalField(decimal_places=2, default=0, max_digits=12)),
-                ('amount', models.IntegerField(default=0)),
-                ('minamount', models.IntegerField(default=3)),
+                ('amount', models.PositiveIntegerField(default=0)),  # Changed to PositiveIntegerField
+                ('minamount', models.PositiveIntegerField(default=3)),  # Changed to PositiveIntegerField
                 ('variant', models.CharField(choices=[('None', 'None'), ('Size', 'Size'), ('Color', 'Color'), ('Size-Color', 'Size-Color')], default='None', max_length=10)),
                 ('slug', models.SlugField(unique=True)),
-                ('status', models.CharField(choices=[('True', 'True'), ('False', 'False')], max_length=10)),
+                ('status', models.CharField(choices=[('Active', 'Active'), ('Inactive', 'Inactive')], max_length=10)),  # Changed 'True'/'False' to more meaningful labels
                 ('create_at', models.DateTimeField(auto_now_add=True)),
                 ('update_at', models.DateTimeField(auto_now=True)),
             ],
@@ -50,31 +50,26 @@ class Migration(migrations.Migration):
             model_name='category',
             name='level',
             field=models.PositiveIntegerField(default=1, editable=False),
-            preserve_default=False,
         ),
         migrations.AddField(
             model_name='category',
             name='lft',
             field=models.PositiveIntegerField(default=0, editable=False),
-            preserve_default=False,
         ),
         migrations.AddField(
             model_name='category',
             name='rght',
             field=models.PositiveIntegerField(default=0, editable=False),
-            preserve_default=False,
         ),
         migrations.AddField(
             model_name='category',
             name='status',
-            field=models.CharField(choices=[('True', 'True'), ('False', 'False')], default=0, max_length=10),
-            preserve_default=False,
+            field=models.CharField(choices=[('Active', 'Active'), ('Inactive', 'Inactive')], max_length=10),
         ),
         migrations.AddField(
             model_name='category',
             name='tree_id',
             field=models.PositiveIntegerField(db_index=True, default=0, editable=False),
-            preserve_default=False,
         ),
         migrations.CreateModel(
             name='Variants',
@@ -82,7 +77,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(blank=True, max_length=100, null=True)),
                 ('image_id', models.IntegerField(blank=True, default=0, null=True)),
-                ('quantity', models.IntegerField(default=1)),
+                ('quantity', models.PositiveIntegerField(default=1)),  # Changed to PositiveIntegerField
                 ('price', models.DecimalField(decimal_places=2, default=0, max_digits=12)),
                 ('color', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='product.Color')),
                 ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='product.Product')),

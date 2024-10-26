@@ -16,10 +16,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Category',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),  # Changed to BigAutoField
                 ('title', models.CharField(max_length=50)),
                 ('keywords', models.CharField(max_length=255)),
-                ('description', models.TextField(max_length=255)),
+                ('description', models.TextField()),  # Removed max_length to allow longer text
                 ('image', models.ImageField(blank=True, upload_to='images/')),
                 ('slug', models.SlugField(unique=True)),
                 ('create_at', models.DateTimeField(auto_now_add=True)),
