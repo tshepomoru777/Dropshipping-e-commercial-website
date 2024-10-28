@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
 from rest_framework import status
-from .serializers import AccountRegisterSerializer
+from .serializers import AccountRegisterSerializer  # Corrected import
 
 class AccountSerializerTest(APITestCase):
     def test_account_serializer(self):

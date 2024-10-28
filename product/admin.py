@@ -1,9 +1,7 @@
 import decimal
-
 from django.contrib import admin
 from django.utils.text import slugify
 from mptt.admin import DraggableMPTTAdmin
-
 from .models import *
 
 
@@ -17,14 +15,13 @@ class CategoryAdmin2(DraggableMPTTAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-
         qs = Category.objects.add_related_count(
             qs,
             Product,
             'category',
             'products_cumulative_count',
-            cumulative=True)
-
+            cumulative=True
+        )
         qs = Category.objects.add_related_count(qs,
                                                 Product,
                                                 'category',
@@ -61,12 +58,12 @@ class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     inlines = [ProductImageInline]
 
-    # def apply_discount(self, request, queryset):
-    #     for prod in queryset:
-    #         prod.price = decimal.Decimal(prod.price) * decimal.Decimal('0.9')
-    #         prod.save()
-    #
-    # actions = [apply_discount]
+    def apply_discount(self, request, queryset):
+        for prod in queryset:
+            prod.price = decimal.Decimal(prod.price) * decimal.Decimal('0.9')
+            prod.save()
+
+    actions = [apply_discount]
 
 
 class CommentAdmin(admin.ModelAdmin):
@@ -74,16 +71,8 @@ class CommentAdmin(admin.ModelAdmin):
     readonly_fields = ('subject', 'comment', 'ip', 'product', 'rate', 'id')
 
 
-# class ColorAdmin(admin.ModelAdmin):
-#     list_display = ['name', 'code', 'color_tag']
-#
-#
-# class SizeAdmin(admin.ModelAdmin):
-#     list_display = ['name', 'code']
-
-
 class VariantsAdmin(admin.ModelAdmin):
-    list_display = ['title', 'product']  # , 'color', 'size', 'price', 'quantity'
+    list_display = ['title', 'product']
 
 
 class SliderAdmin(admin.ModelAdmin):
@@ -97,44 +86,35 @@ class ShopeeAdmin(admin.ModelAdmin):
                        'variants', 'brand', 'supplier']
 
     def add_to_product(self, request, queryset):
-        product = Product()
         for qur in queryset:
-            product.title = qur.title
-            product.slug = slugify(qur.title)
-            product.description = qur.description
-            product.price = qur.price
-            product.src_url = qur.product_url
-            product.variant = qur.variant_type
-            # category
-            cat_list = qur.categories
-            cat_id = Category.objects.get(title=cat_list[len(cat_list) - 1]).id
-            product.category_id = cat_id
+            try:
+                product = Product.objects.create(
+                    title=qur.title,
+                    slug=slugify(qur.title),
+                    description=qur.description,
+                    price=qur.price,
+                    src_url=qur.product_url,
+                    variant=qur.variant_type,
+                    category=Category.objects.get(title=qur.categories[-1])
+                )
 
-            # image
-            images_list = qur.img_urls
-            product.img_url = images_list[0]
-
-            if not Product.objects.filter(slug=qur.title).exists():
+                product.img_url = qur.img_urls[0]
                 product.image = product.get_remote_image()
+                product.save()
 
-            # get images
-            images_list = qur.img_urls
-            for i in range(1, len(images_list)):
-                img = Images()
-                img.product = Product.objects.get(title=qur.title)
-                img.img_url = images_list[i]
-                img.image = img.get_remote_image()
+                # Add images
+                for img_url in qur.img_urls[1:]:
+                    img = Images(product=product, img_url=img_url)
+                    img.image = img.get_remote_image()
+                    img.save()
 
-            # get variants
-            var_list = qur.variants
-            for i in range(len(var_list)):
-                var = Variants()
-                var.title = var_list[i]
-                var.product = Product.objects.get(title=qur.title)
-                var.save()
+                # Add variants
+                for var_title in qur.variants:
+                    variant = Variants(product=product, title=var_title)
+                    variant.save()
 
-            # delete this product from this model
-            # qur.delete()
+            except Exception as e:
+                self.message_user(request, f'Error processing {qur.title}: {str(e)}', level='error')
 
     actions = [add_to_product]
 
@@ -144,7 +124,5 @@ admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductFromShopee, ShopeeAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Images, ImagesAdmin)
-# admin.site.register(Color, ColorAdmin)
-# admin.site.register(Size, SizeAdmin)
 admin.site.register(Variants, VariantsAdmin)
 admin.site.register(Slider, SliderAdmin)

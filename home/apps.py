@@ -1,6 +1,5 @@
 from django.apps import AppConfig
 
-
 class HomeConfig(AppConfig):
-    name = 'SUNDeliver'
-    verbose_name = 'SUNDELIVER'  # Change to desired display name
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'home'  # Ensure this matches your app's directory name

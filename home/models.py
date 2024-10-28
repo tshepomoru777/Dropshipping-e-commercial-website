@@ -70,7 +70,7 @@ class Order(models.Model):
     note = models.CharField(blank=True, max_length=1000)  # Reduced length for 'note'
     address_op = models.CharField(blank=True, max_length=500)
     company = models.CharField(blank=True, max_length=500)
-
+    created_at = models.DateTimeField(auto_now_add=True)
 # Contact message model
 class ContactMessage(models.Model):
     name = models.CharField(max_length=50)

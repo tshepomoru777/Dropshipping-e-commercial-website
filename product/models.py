@@ -1,10 +1,8 @@
-# from django.contrib.auth.models import User
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.conf import settings
-# Create your models here.
 from django.db.models import Avg, Count
-from django.forms import ModelForm, forms
+from django.forms import ModelForm
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from mptt.fields import TreeForeignKey
@@ -33,20 +31,17 @@ class ProductFromShopee(models.Model):
     # add category
     def single_cat(self):
         obj = self.objects.values_list('categories')  # all categories
-        for cat_list in obj:  # (['Shopee', 'Thời Trang Nam', 'Áo thun', 'Áo ngắn tay không cổ'],)
-            for cat in cat_list:  # ['Shopee', 'Thời Trang Nam', 'Áo thun', 'Áo ngắn tay không cổ']
-                for i in range(1, len(cat)):  # 'Thời Trang Nam'
+        for cat_list in obj:
+            for cat in cat_list:
+                for i in range(1, len(cat)):
                     c1 = Category()
                     c1.title = cat[i]
                     c1.slug = cat[i]
                     c1.description = cat[i]
-                    # first category is not parent
                     if i == 1:
                         c1.parent = None
-                    # the next one is child of previous
                     else:
                         c1.parent_id = Category.objects.get(title=cat[i - 1]).id
-                    # if not already in, save
                     if not Category.objects.filter(slug=cat[i]).exists():
                         c1.save()
 
@@ -65,8 +60,8 @@ class Category(MPTTModel):
     def get_absolute_url(self):
         return reverse('category_detail', kwargs={'slug': self.slug})
 
-    def __str__(self):  # __str__ method elaborated later in
-        full_path = [self.title]  # post.  use __unicode__ in place of
+    def __str__(self):
+        full_path = [self.title]
         k = self.parent
         while k is not None:
             full_path.append(k.title)
@@ -75,13 +70,7 @@ class Category(MPTTModel):
 
 
 class Product(models.Model):
-    # VARIANTS = (
-    #     ('None', 'None'),
-    #     ('Size', 'Size'),
-    #     ('Color', 'Color'),
-    #     ('Size-Color', 'Size-Color'),
-    # )
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)  # many to one relation with Category
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     title = models.TextField(max_length=255)
     description = models.TextField()
     src_url = models.URLField()
@@ -127,7 +116,7 @@ class Product(models.Model):
 class Images(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     title = models.CharField(max_length=50, blank=True)
-    image = models.ImageField(blank=True, upload_to='images/',  max_length=500)
+    image = models.ImageField(blank=True, upload_to='images/', max_length=500)
     img_url = models.URLField()
 
     def __str__(self):
@@ -162,37 +151,9 @@ class CommentForm(ModelForm):
         fields = {'subject', 'comment', 'rate'}
 
 
-# class Color(models.Model):
-#     name = models.CharField(max_length=20)
-#     code = models.CharField(max_length=10, blank=True, null=True)
-#
-#     def __str__(self):
-#         return self.name
-#
-#     def color_tag(self):
-#         if self.code is not None:
-#             return mark_safe('<p style="background-color:{}">Color </p>'.format(self.code))
-#         else:
-#             return ""
-#
-#
-# class Size(models.Model):
-#     name = models.CharField(max_length=20)
-#     code = models.CharField(max_length=10, blank=True, null=True)
-#
-#     def __str__(self):
-#         return self.name
-
-
 class Variants(models.Model):
     title = models.CharField(max_length=100, blank=True, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-
-    # color = models.ForeignKey(Color, on_delete=models.CASCADE, blank=True, null=True)
-    # size = models.ForeignKey(Size, on_delete=models.CASCADE, blank=True, null=True)
-    # image_id = models.IntegerField(blank=True, null=True, default=0)
-    # quantity = models.IntegerField(default=1)
-    # price = models.FloatField()
 
     def __str__(self):
         return self.title

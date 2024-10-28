@@ -13,7 +13,6 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -52,7 +51,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'cart',
     'search',
-
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -68,7 +66,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Added for serving static files in production
 ]
 
 ROOT_URLCONF = 'Ecom.urls'
@@ -95,21 +93,13 @@ WSGI_APPLICATION = 'Ecom.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-
     'default': {
-
         'ENGINE': 'django.db.backends.postgresql',
-
         'NAME': 'project',
-
         'USER': 'peterarendse',
-
         'PASSWORD': '3071',
-
         'HOST': 'localhost',
-
         'PORT': '5432',
-
     }
 }
 
@@ -136,32 +126,17 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
-
     'BLACKLIST_AFTER_ROTATION': True,
-
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,  # Using environment variable for secret key
     'AUTH_HEADER_TYPES': ('Bearer',),
     'USER_ID_FIELD': 'id',
-
     'USER_ID_CLAIM': 'user_id',
-
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-
     'TOKEN_TYPE_CLAIM': 'token_type',
 }
 
-
-
-
-#'JTI_CLAIM': 'jti',
-
-
-
-
-
 # Internationalization
-
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
@@ -178,11 +153,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static/')]  # Ensure your 'static/' directory exists
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # Ensure your 'static/' directory exists
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Added for static file collection
 
 # Media files (Images, uploads)
-MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images/products_images')
-MEDIA_URL = '/images/products_images/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/assets/images/products_images')
+MEDIA_URL = '/assets/images/products_images/'
 
 # Redirect URL after login
 LOGIN_REDIRECT_URL = "home"
@@ -201,8 +177,10 @@ ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/?verification=1'
 # Email Backend for development
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Whitenoise middleware for serving static files in production
-MIDDLEWARE += ['whitenoise.middleware.WhiteNoiseMiddleware']
+# Whitenoise settings for static files
+WHITENOISE_KEEP_ONLY_HASHED_FILES = True  # Ignore missing files when using hashed file names
+
+# Whitenoise storage for compressing and caching static files in production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # SITE_ID needed for Allauth
